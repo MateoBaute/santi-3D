@@ -86,10 +86,10 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
             <a
-              href="#cotizar"
+              href="/pedido"
               className="px-6 py-3 text-center font-medium text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg transition-colors"
             >
-              Cotizar Pieza
+              Enviar Pieza
             </a>
           </div>
         </div>

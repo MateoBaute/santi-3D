@@ -60,7 +60,7 @@ export default function FormularioCotizar() {
                     Cotización Sin Cargo
                 </span>
                 <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-                    Sube tu proyecto 3D
+                    Envía tu pedido 3D
                 </h2>
                 <p className="text-zinc-400 mt-2 text-sm">
                     Los datos se registrarán en nuestro sistema y el archivo llegará directo a nuestro correo.
@@ -134,7 +134,7 @@ export default function FormularioCotizar() {
                 {/* Archivo 3D */}
                 <div>
                     <label htmlFor="archivo3d" className="block text-xs font-semibold tracking-wider uppercase text-zinc-400 mb-2">
-                        Archivo 3D (.STL, .OBJ, .STEP, .3DS o archivos comprimidos .ZIP)
+                        Archivo (.STL, .OBJ, .ZIP menor a 5MB o imagen .PNG, .JPG)
                     </label>
                     <div className="relative flex items-center justify-center w-full bg-zinc-900 border-2 border-dashed border-zinc-800 rounded-xl p-6 hover:border-amber-500/50 transition-colors group cursor-pointer">
                         <input
@@ -142,7 +142,7 @@ export default function FormularioCotizar() {
                             name="archivo3d"
                             id="archivo3d"
                             required
-                            accept=".stl,.obj,.step,.glb,.3ds,.zip"
+                            accept=".stl,.obj,.step,.glb,.3ds,.zip,.png,.jpg"
                             className="absolute inset-0 opacity-0 cursor-pointer"
                         />
                         <div className="text-center pointer-events-none">

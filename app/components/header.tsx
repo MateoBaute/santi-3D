@@ -17,7 +17,7 @@ export default function Header() {
                     {/* Logo Minimalista: Sin la caja gris genérica, tipografía pura */}
                     <Link href="/" className="flex items-center tracking-tight group">
                         <span className="text-zinc-50 font-black text-xl transition-colors group-hover:text-amber-500">
-                            Santi<span className="text-amber-500 group-hover:text-zinc-50 transition-colors ml-1">3D</span>
+                            3D<span className="text-amber-500 group-hover:text-zinc-50 transition-colors ml-1">Sing</span>
                         </span>
                     </Link>
 
@@ -42,7 +42,7 @@ export default function Header() {
                             Galería
                         </Link>
                         <a
-                            href="whatsapp://send?phone=+59891332228"
+                            href="/pedido"
                             className="px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-zinc-50 hover:bg-zinc-800/50 rounded-lg transition-all duration-200 lowercase first-letter:uppercase"
                         >
                             Contacto

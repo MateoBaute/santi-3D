@@ -1,4 +1,4 @@
-import FormularioCotizar from "../components/FormularioCotizar";
+import FormularioCotizar from "@/app/components/FormularioCotizar";
 
 export default function pedido(){
     return(
