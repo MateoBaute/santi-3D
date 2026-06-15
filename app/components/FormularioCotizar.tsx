@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Inicializa Supabase (reemplaza con tus credenciales)
+// Inicializa Supabase leyendo de forma segura las variables de entorno
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -18,42 +18,41 @@ export default function FormularioCotizar() {
 
         const formElement = e.currentTarget;
         const formData = new FormData(formElement);
-        formData.append("access_key", "86b1e26f8c6-1466-42a3-abb2-4973483886b5");
 
+        // Extraemos las variables independientes limpias para la base de datos
         const nombre = formData.get('nombre') as string;
         const whatsapp = formData.get('whatsapp') as string;
-        const correo = formData.get('email') as string;
+        const correo = formData.get('email') as string; // Captura el input name="email"
         const descripcion = formData.get('descripcion') as string;
-
-        for (const [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
+        const archivoFisico = formData.get('archivo3d') as File;
 
         try {
+            // 1. Subir el archivo 3D a tu bucket público de Supabase Storage
+            const nombreArchivo = `${Date.now()}-${archivoFisico.name}`;
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('modelos-clientes')
+                .upload(nombreArchivo, archivoFisico);
+
+            if (uploadError) throw uploadError;
+
+            // 2. Obtener la URL de descarga directa generada por tu Storage público
+            const { data: { publicUrl } } = supabase.storage
+                .from('modelos-clientes')
+                .getPublicUrl(nombreArchivo);
+
+            // 3. Guardar TODOS los datos (incluyendo la URL) en la Base de Datos
             const { error: dbError } = await supabase
                 .from('pedidos_3d')
-                .insert([{ nombre, whatsapp, correo, descripcion }]);
+                .insert([{ nombre, whatsapp, correo, descripcion, archivo_url: publicUrl }]);
 
             if (dbError) throw dbError;
 
-            const response = await fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                body: formData,
-            });
+            // Si todo impactó con éxito en Supabase, mostramos el cartel verde
+            setStatus('success');
+            formElement.reset();
 
-            const data = await response.json();
-
-            console.log("Web3Forms:", data);
-
-            if (data.success) {
-                setStatus('success');
-                formElement.reset();
-            } else {
-                console.error(data);
-                setStatus('error');
-            }
         } catch (error) {
-            console.error(error);
+            console.error("Error en el flujo de Supabase:", error);
             setStatus('error');
         }
     };
@@ -68,14 +67,11 @@ export default function FormularioCotizar() {
                     Envía tu pedido 3D
                 </h2>
                 <p className="text-zinc-400 mt-2 text-sm">
-                    Los datos se registrarán en nuestro sistema y el archivo llegará directo a nuestro correo.
+                    Los datos y el modelo se registrarán en nuestro sistema para ser evaluados de inmediato.
                 </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-950 p-8 rounded-2xl border border-zinc-900 shadow-2xl">
-                {/* Tu Access Key de Web3Forms oculta */}
-                <input type="hidden" name="access_key" value="1e26f8c6-1466-42a3-abb2-4973483886b5" />
-
                 {/* Nombre */}
                 <div>
                     <label htmlFor="nombre" className="block text-xs font-semibold tracking-wider uppercase text-zinc-400 mb-2">
@@ -106,7 +102,7 @@ export default function FormularioCotizar() {
                     />
                 </div>
 
-                {/* Correo Electrónico (Atributo name corregido a 'email' para Web3Forms y anti-spam) */}
+                {/* Correo Electrónico */}
                 <div>
                     <label htmlFor="correo" className="block text-xs font-semibold tracking-wider uppercase text-zinc-400 mb-2">
                         Correo Electrónico
@@ -139,7 +135,7 @@ export default function FormularioCotizar() {
                 {/* Archivo 3D */}
                 <div>
                     <label htmlFor="archivo3d" className="block text-xs font-semibold tracking-wider uppercase text-zinc-400 mb-2">
-                        Archivo (.STL, .OBJ, .ZIP menor a 5MB o imagen .PNG, .JPG)
+                        Archivo (.STL, .OBJ, .ZIP o imagen .PNG, .JPG)
                     </label>
                     <div className="relative flex items-center justify-center w-full bg-zinc-900 border-2 border-dashed border-zinc-800 rounded-xl p-6 hover:border-amber-500/50 transition-colors group cursor-pointer">
                         <input
@@ -155,7 +151,7 @@ export default function FormularioCotizar() {
                                 Selecciona o arrastra tu archivo aquí
                             </span>
                             <span className="text-zinc-600 text-xs block mt-1">
-                                Llegará directo a nuestro email
+                                Se almacenará de forma segura en nuestro servidor
                             </span>
                         </div>
                     </div>
@@ -172,7 +168,7 @@ export default function FormularioCotizar() {
 
                 {status === 'success' && (
                     <p className="text-center text-sm font-medium text-emerald-500 bg-emerald-500/10 py-3 rounded-xl border border-emerald-500/20">
-                        ¡Pedido registrado! El archivo fue enviado al correo.
+                        ¡Pedido registrado con éxito! Gracias por tu confianza.
                     </p>
                 )}
                 {status === 'error' && (
