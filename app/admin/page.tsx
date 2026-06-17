@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
+import Login from '@/app/components/admin/login'
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -22,7 +24,8 @@ export default function AdminPanel() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
   const [eliminandoId, setEliminandoId] = useState<string | null>(null);
-  
+  const [showLogin, setShowLogin] = useState<boolean>(false)
+
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState<Pedido | null>(null);
   const [mostrarSheet, setMostrarSheet] = useState(false);
 
@@ -74,7 +77,7 @@ export default function AdminPanel() {
         const partesUrl = pedido.archivo_url.split('/modelos-clientes/');
         if (partesUrl.length > 1) {
           const nombreArchivo = partesUrl[1];
-          
+
           const { error: storageError } = await supabase.storage
             .from('modelos-clientes')
             .remove([nombreArchivo]);
@@ -108,6 +111,7 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-black text-zinc-50 p-8 font-sans relative overflow-x-hidden">
       <div className="max-w-5xl mx-auto">
+        <Login />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-black tracking-tight">Bandeja de Clientes</h1>
@@ -117,7 +121,7 @@ export default function AdminPanel() {
             Total: {pedidos.length} registros
           </span>
         </div>
-        
+
         <div className="space-y-4">
           {pedidos.map((pedido) => (
             <div key={pedido.id} className="p-6 bg-zinc-950 border border-zinc-900 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -145,7 +149,7 @@ export default function AdminPanel() {
               </div>
             </div>
           ))}
-          
+
           {pedidos.length === 0 && (
             <p className="text-zinc-500 text-center py-16 border border-dashed border-zinc-900 rounded-xl">No hay registros de clientes aún.</p>
           )}
@@ -155,17 +159,15 @@ export default function AdminPanel() {
       {/* COMPONENTE SHEET LATERAL ANIMADO */}
       {pedidoSeleccionado && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div 
+          <div
             onClick={cerrarSheet}
-            className={`absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 ease-out ${
-              mostrarSheet ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
+            className={`absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 ease-out ${mostrarSheet ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              }`}
           />
 
-          <div 
-            className={`relative w-full max-w-lg h-full bg-zinc-950 border-l border-zinc-900 p-8 flex flex-col justify-between shadow-2xl transition-all duration-300 ease-out transform ${
-              mostrarSheet ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-90'
-            }`}
+          <div
+            className={`relative w-full max-w-lg h-full bg-zinc-950 border-l border-zinc-900 p-8 flex flex-col justify-between shadow-2xl transition-all duration-300 ease-out transform ${mostrarSheet ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-90'
+              }`}
           >
             <div className="space-y-6">
               <div className="flex justify-between items-center pb-4 border-b border-zinc-900">
@@ -177,7 +179,7 @@ export default function AdminPanel() {
                     {pedidoSeleccionado.nombre}
                   </h2>
                 </div>
-                <button 
+                <button
                   onClick={cerrarSheet}
                   className="p-2 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 transition-colors font-medium text-sm"
                 >

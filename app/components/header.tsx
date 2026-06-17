@@ -35,6 +35,12 @@ export default function Header() {
                         >
                             Galería
                         </Link>
+                        <Link
+                            href="/FAQs"
+                            className="block px-3 py-2 rounded-xl text-zinc-400 hover:text-zinc-50 hover:bg-zinc-900 transition-colors"
+                        >
+                            FAQs
+                        </Link>
                         <a
                             href="/pedido"
                             className="px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-zinc-50 hover:bg-zinc-800/50 rounded-lg transition-all duration-200 lowercase first-letter:uppercase"
@@ -82,6 +88,13 @@ export default function Header() {
                             onClick={() => setIsOpen(false)}
                         >
                             Galería
+                        </Link>
+                        <Link
+                            href="/FAQQs"
+                            className="block px-3 py-2 rounded-xl text-zinc-400 hover:text-zinc-50 hover:bg-zinc-900 transition-colors"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            FAQs
                         </Link>
                         <a
                             href="whatsapp://send?phone=+59891332228"
